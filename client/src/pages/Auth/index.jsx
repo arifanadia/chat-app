@@ -1,20 +1,45 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import victory from "../../assets/victory.svg"
-import Background from "../../assets/login2.png"
+import Background from "../../assets/login.png"
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+// import { apiClient } from "@/lib/api-client";
+// import { SIGNUP_ROUTE } from "@/utils/constants";
+import axios from "axios";
 
 const Auth = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+
+    const validateSignup = () => {
+        if (!email.length) {
+            toast.error("Email is Required")
+            return false
+        }
+        if (!password.length) {
+            toast.error("Password is Required")
+            return false
+        }
+        if (password !== confirmPassword) {
+            toast.error("Password and Confirm password Should be same")
+            return false
+        }
+        return true
+    }
     const handleLogin = async () => {
 
     }
     const handleSignUp = async () => {
+        console.log({ email, password });
 
+        if (validateSignup()) {
+            const res = await axios.post('http://localhost:5000/api/auth/signup', { email, password });
+            console.log({ res });
+        }
     }
     return (
         <div className="w-[100vw] h-[100vh] flex items-center justify-center">
@@ -82,7 +107,7 @@ const Auth = () => {
                     </div>
                 </div>
                 <div className="hidden xl:flex justify-center items-center">
-                    <img src={Background} alt="Background Login " className="h-[700px]" />
+                    <img src={Background} alt="Background Login " className="size-[500px]" />
                 </div>
 
             </div>
