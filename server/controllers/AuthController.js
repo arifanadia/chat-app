@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
 import { compare } from "bcrypt";
+import { renameSync } from 'fs';
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -84,6 +85,123 @@ export const getUserInfo = async (req, res, next) => {
         if (!userData) {
             return res.status(404).send("User with the given id not founds")
         }
+
+        return res.status(200).json({
+            user: {
+                id: userData.id,
+                email: userData.email,
+                profileSetup: userData.profileSetup,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                color: userData.color,
+                image: userData.image
+            }
+        })
+
+
+    } catch (err) {
+        console.log({ err });
+        return res.status(500).send("Internal Server Error")
+    }
+}
+export const updateProfile = async (req, res, next) => {
+
+    try {
+
+        const { userId } = req;
+        const { firstName, lastName, color } = req.body
+        if (!firstName || !lastName || color === undefined) {
+            return res.status(400).send("First name  Last Name and color is Required. ")
+        }
+        const userData = await User.findByIdAndUpdate(userId,
+            {
+                firstName,
+                lastName,
+                color,
+                profileSetup: true
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+
+        return res.status(200).json({
+            user: {
+                id: userData.id,
+                email: userData.email,
+                profileSetup: userData.profileSetup,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                color: userData.color,
+                image: userData.image
+            }
+        })
+
+
+    } catch (err) {
+        console.log({ err });
+        return res.status(500).send("Internal Server Error")
+    }
+}
+
+export const addProfileImage = async (req, res, next) => {
+
+    try {
+
+        console.log(req.file);
+
+        if (!req.file) {
+            return res.status(400).send("File is Required. ")
+        }
+        const date = Date.now()
+        const fileName = `uploads/profiles/${date}_${req.file.originalname}`;
+        renameSync(req.file.path, fileName);
+
+        const updateUser = await User.findByIdAndUpdate(req.userId,
+            {
+                image : fileName
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+
+        return res.status(200).json({
+            user: {
+                
+                image: updateUser.image
+            }
+        })
+
+
+    } catch (err) {
+        console.log({ err });
+        return res.status(500).send("Internal Server Error")
+    }
+}
+export const removeProfileImage = async (req, res, next) => {
+
+    try {
+
+        const { userId } = req;
+        const { firstName, lastName, color } = req.body
+        if (!firstName || !lastName || color === undefined) {
+            return res.status(400).send("First name  Last Name and color is Required. ")
+        }
+        const userData = await User.findByIdAndUpdate(userId,
+            {
+                firstName,
+                lastName,
+                color,
+                profileSetup: true
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        )
 
         return res.status(200).json({
             user: {
