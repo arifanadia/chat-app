@@ -5,14 +5,17 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-// import { apiClient } from "@/lib/api-client";
-// import { SIGNUP_ROUTE } from "@/utils/constants";
-import axios from "axios";
+import { apiClient } from "@/lib/api-client";
+import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
+import { useNavigate } from "react-router-dom";
+import { useAppStore } from "@/store";
 
 const Auth = () => {
+    const { setUserInfo } = useAppStore()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const navigate = useNavigate()
 
 
     const validateSignup = () => {
@@ -30,15 +33,48 @@ const Auth = () => {
         }
         return true
     }
+    const validateLogin = () => {
+        if (!email.length) {
+            toast.error("Email is Required")
+            return false
+        }
+        if (!password.length) {
+            toast.error("Password is Required")
+            return false
+        }
+        return true
+    }
     const handleLogin = async () => {
+        if (validateLogin()) {
+            const res = await apiClient.post(LOGIN_ROUTE,
+                { email, password },
+                { withCredentials: true }
+            );
+            if (res.data.user.id) {
+                console.log(res.data.user);
+                setUserInfo(res.data.user)
+                if (res.data.user.ProfileSetup) {
+
+                    navigate('/chat')
+                } else {
+                    navigate('/profile')
+                }
+            }
+        }
 
     }
     const handleSignUp = async () => {
-        console.log({ email, password });
+
 
         if (validateSignup()) {
-            const res = await axios.post('http://localhost:5000/api/auth/signup', { email, password });
-            console.log({ res });
+            const res = await apiClient.post(SIGNUP_ROUTE,
+                { email, password },
+                { withCredentials: true }
+            );
+            if (res.status === 201) {
+                setUserInfo(res.data.user)
+                navigate('/profile')
+            }
         }
     }
     return (
@@ -53,7 +89,7 @@ const Auth = () => {
                         <p className="font-medium text-center">Fill in the details to get start with the best chat app </p>
                     </div>
                     <div className="w-full flex items-center justify-center">
-                        <Tabs className="w-3/4">
+                        <Tabs className="w-3/4" defaultValue="login">
                             <TabsList className="bg-transparent rounded-none w-full">
                                 <TabsTrigger
                                     className="text-black text-opacity-90 border-b-2 w-full data-[state=active]:text-black data-[state=active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300"
