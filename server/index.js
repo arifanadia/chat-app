@@ -7,6 +7,7 @@ import path from 'path';
 import mongoose from "mongoose";
 import authRoutes from "./routes/AuthRoutes.js";
 import contactsRoutes from "./routes/ContactsRoute.js";
+import setupSocket from "./socket.js";
 
 
 dotenv.config();
@@ -51,6 +52,7 @@ run().catch(console.dir);
 app.get('/',(req,res) =>{
     res.send('chat app is running')
 });
-app.listen(port,() => {
+const server = app.listen(port,() => {
     console.log(`chat app is running on port : ${port}`);
 })
+setupSocket(server);
