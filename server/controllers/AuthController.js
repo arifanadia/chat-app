@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
 import { compare } from "bcrypt";
-import { renameSync } from 'fs';
+import { renameSync, unlinkSync } from 'fs';
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -157,6 +157,7 @@ export const addProfileImage = async (req, res, next) => {
         const date = Date.now()
         const fileName = `uploads/profiles/${date}_${req.file.originalname}`;
         renameSync(req.file.path, fileName);
+        console.log(req.file.path);
 
         const updateUser = await User.findByIdAndUpdate(req.userId,
             {
@@ -185,36 +186,19 @@ export const removeProfileImage = async (req, res, next) => {
 
     try {
 
-        const { userId } = req;
-        const { firstName, lastName, color } = req.body
-        if (!firstName || !lastName || color === undefined) {
-            return res.status(400).send("First name  Last Name and color is Required. ")
+        const { userId } = req; 
+        const user = await User.findById(userId)
+           
+        if (!user) {
+            return res.status(404).send("User not found ")
         }
-        const userData = await User.findByIdAndUpdate(userId,
-            {
-                firstName,
-                lastName,
-                color,
-                profileSetup: true
-            },
-            {
-                new: true,
-                runValidators: true
-            }
-        )
+        if(user.image){
+            unlinkSync(user.image)
+        }
+        user.image = null;
+        await user.save();
 
-        return res.status(200).json({
-            user: {
-                id: userData.id,
-                email: userData.email,
-                profileSetup: userData.profileSetup,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                color: userData.color,
-                image: userData.image
-            }
-        })
-
+        return res.status(200).send("Profile image removed successfully")
 
     } catch (err) {
         console.log({ err });

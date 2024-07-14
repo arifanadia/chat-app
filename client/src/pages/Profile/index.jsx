@@ -2,14 +2,13 @@ import { useAppStore } from "@/store";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
-import { Avatar } from "@radix-ui/react-avatar";
-import { AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { colors, getColor } from "@/lib/utils";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { ADD_PROFILE_IMAGE_ROUTE, HOST, UPDATE_PROFILE_ROUTE } from "@/utils/constants";
+import { ADD_PROFILE_IMAGE_ROUTE, HOST, REMOVE_PROFILE_IMAGE_ROUTE, UPDATE_PROFILE_ROUTE } from "@/utils/constants";
 
 
 
@@ -30,11 +29,12 @@ const Profile = () => {
             setSelectedColor(userInfo.color)
 
         }
-        if(userInfo.image){
+        if (userInfo.image) {
             setImage(`${HOST}/${userInfo.image}`)
         }
-    }, [])
+    }, [userInfo])
 
+    console.log(setImage);
     const validateProfile = () => {
         if (!firstName) {
             toast.error("First Name is Required")
@@ -84,20 +84,29 @@ const Profile = () => {
             formData.append("profile-image", file);
             const res = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData, { withCredentials: true });
             console.log(res);
-            if (res.status === 200 && res.data.image) {
-                setUserInfo({ ...userInfo, image: res.data.image });
+            if (res.status === 200 && res.data.user.image) {
+                setUserInfo({ ...userInfo, image: res.data.user.image });
                 toast.success("Image Updated Successfully.")
             }
-            //     const reader = new FileReader();
-            //     reader.onload = () => {
-            //        setImage(reader.result)
-            //     }
-            //     reader.readAsDataURL(file)
-            // }
+
         }
 
     }
     const handleDeleteImage = async () => {
+        try {
+            const res = await apiClient.delete(REMOVE_PROFILE_IMAGE_ROUTE, { withCredentials: true });
+            console.log(res);
+            if (res.status === 200 && res.data.image) {
+                setUserInfo({ ...userInfo, image: null });
+
+            }
+            toast.success("Image removed Successfully.");
+            setImage(null)
+
+
+        } catch (err) {
+            console.log(err);
+        }
 
     }
     return (
@@ -113,7 +122,7 @@ const Profile = () => {
                     <Avatar className="size-32 md:size-48 rounded-full overflow-hidden">
                         {
                             image ?
-                                <AvatarImage src={image} alt="Profile" className="size-full object-cover" />
+                                <AvatarImage src={image} alt="profile-image" className="size-full object-cover bg-black" />
                                 :
                                 <div className={`uppercase size-32 md:size-48 border-[1px] text-5xl flex items-center justify-center rounded-full ${getColor(selectedColor)} `}>
                                     {
