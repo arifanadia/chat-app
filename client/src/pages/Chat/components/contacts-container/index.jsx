@@ -1,5 +1,6 @@
+import NewDm from "./components/new-dm";
 import ProfileInfo from "./components/profile-info";
-import NewDm from "./components/profile-info/new-dm";
+
 
 
 const ContactsContainer = () => {

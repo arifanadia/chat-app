@@ -6,6 +6,7 @@ import path from 'path';
 
 import mongoose from "mongoose";
 import authRoutes from "./routes/AuthRoutes.js";
+import contactsRoutes from "./routes/ContactsRoute.js";
 
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api/auth', authRoutes );
+app.use('/api/contacts', contactsRoutes );
 
 // must add path
 const __dirname = path.resolve();

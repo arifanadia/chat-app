@@ -10,7 +10,7 @@ const EmptyChatContainer = () => {
             height={200}
             width={200}
             options={animationDefaultOptions}/>
-            <div className="text-opacity-80 text-white flex flex-col items-center text-center text-3xl lg:text-4xl transition-all duration-300">
+            <div className="text-opacity-80 text-white flex flex-col items-center text-center text-3xl lg:text-4xl transition-all duration-300 gap-5 mt-10">
                 <h3 className="poppins-medium">
                     Hi<span className="text-purple-500">! </span>
                     Welcome to 
