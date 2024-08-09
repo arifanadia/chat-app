@@ -41,7 +41,7 @@ const ProfileInfo = () => {
                             userInfo.image ?
                                 <AvatarImage src={`${HOST}/${userInfo.image}`} alt="profile-image" className="size-full object-cover bg-black" />
                                 :
-                                <div className={`uppercase size-12  border-[1px] text-5xl flex items-center justify-center rounded-full ${getColor(userInfo.color)} `}>
+                                <div className={`uppercase size-12 border-[1px] text-2xl flex items-center justify-center rounded-full ${getColor(userInfo.color)} `}>
                                     {
                                         userInfo.firstName ?
                                             userInfo.firstName.split("").shift()

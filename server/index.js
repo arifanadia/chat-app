@@ -8,21 +8,23 @@ import mongoose from "mongoose";
 import authRoutes from "./routes/AuthRoutes.js";
 import contactsRoutes from "./routes/ContactsRoute.js";
 import setupSocket from "./socket.js";
+import messagesRoutes from "./routes/MessagesRoutes.js";
 
 
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 5000 ;
+const port = process.env.PORT || 5000;
 // middleware
 app.use(cors({
-    origin :process.env.ORIGIN,
-    methods : ["GET","POST","PUT","PATCH","DELETE"],
-    credentials : true
+  origin: process.env.ORIGIN,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true
 }))
 app.use(cookieParser());
 app.use(express.json());
-app.use('/api/auth', authRoutes );
-app.use('/api/contacts', contactsRoutes );
+app.use('/api/auth', authRoutes);
+app.use('/api/contacts', contactsRoutes);
+app.use('/api/messages', messagesRoutes);
 
 // must add path
 const __dirname = path.resolve();
@@ -49,10 +51,10 @@ run().catch(console.dir);
 
 
 
-app.get('/',(req,res) =>{
-    res.send('chat app is running')
+app.get('/', (req, res) => {
+  res.send('chat app is running')
 });
-const server = app.listen(port,() => {
-    console.log(`chat app is running on port : ${port}`);
+const server = app.listen(port, () => {
+  console.log(`chat app is running on port : ${port}`);
 })
 setupSocket(server);
