@@ -21,7 +21,7 @@ export const signUp = async (req, res, next) => {
             maxAge,
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            secure : true,
+            sameSite : "None",
         });
         return res.status(201).json({
             user: {
@@ -209,7 +209,7 @@ export const removeProfileImage = async (req, res, next) => {
 export const logOut = async (req, res, next) => {
 
     try {
-        res.cookie("jwt", " ", { maxAge: 1, 
+        res.cookie("jwt", " ", { maxAge: 0, 
             httpOnly: true,
             secure:true,
             sameSite: 'None', })
