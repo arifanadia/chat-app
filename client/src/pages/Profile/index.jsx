@@ -52,7 +52,7 @@ const Profile = () => {
             if (validateProfile()) {
                 const res = await apiClient.post(UPDATE_PROFILE_ROUTE,
                     { firstName, lastName, color: selectedColor },
-                    { withCredentials: true }
+                   
                 );
                 if (res.status === 200 && res.data) {
                     setUserInfo({ ...res.data.user });
@@ -82,7 +82,7 @@ const Profile = () => {
         if (file) {
             const formData = new FormData();
             formData.append("profile-image", file);
-            const res = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData, { withCredentials: true });
+            const res = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData);
             console.log(res);
             if (res.status === 200 && res.data.user.image) {
                 setUserInfo({ ...userInfo, image: res.data.user.image });
