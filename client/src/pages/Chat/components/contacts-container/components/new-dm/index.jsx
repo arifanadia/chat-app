@@ -34,7 +34,7 @@ const NewDm = () => {
 
                 const res = await apiClient.post(SEARCH_CONTACTS_ROUTE,
                     { searchTerm },
-                    { withCredentials: true }
+                    
                 )
 
                 console.log(res);

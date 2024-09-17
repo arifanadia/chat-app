@@ -26,7 +26,7 @@ const App = () => {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const res = await apiClient.get(GET_USER_INFO, { withCredentials: true })
+        const res = await apiClient.get(GET_USER_INFO)
         console.log({ res });
         if (res.status === 200 && res.data.user.id) {
           setUserInfo(res.data.user)

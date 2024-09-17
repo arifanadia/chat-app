@@ -52,7 +52,7 @@ const Profile = () => {
             if (validateProfile()) {
                 const res = await apiClient.post(UPDATE_PROFILE_ROUTE,
                     { firstName, lastName, color: selectedColor },
-                    { withCredentials: true }
+                
                 );
                 if (res.status === 200 && res.data) {
                     setUserInfo({ ...res.data.user });

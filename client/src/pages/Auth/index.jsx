@@ -44,38 +44,36 @@ const Auth = () => {
         }
         return true
     }
+    const handleSignUp = async () => {
+        if (validateSignup()) {
+            try {
+                const res = await apiClient.post(SIGNUP_ROUTE, { email, password });
+                if (res.status === 201) {
+                    localStorage.setItem('token', res.data.token); // Store token
+                    setUserInfo(res.data.user);
+                    navigate('/profile');
+                }
+            } catch (err) {
+                console.error("Signup Error:", err);
+            }
+        }
+    };
+
     const handleLogin = async () => {
         if (validateLogin()) {
-            const res = await apiClient.post(LOGIN_ROUTE,
-                { email, password },
-                { withCredentials: true }
-            );
-            if (res.data.user.id) {
-                console.log(res.data.user);
-                setUserInfo(res.data.user)
-                if (res.data.user.ProfileSetup) {
-
-                    navigate('/chat')
-                } else {
-                    navigate('/profile')
+            try {
+                const res = await apiClient.post(LOGIN_ROUTE, { email, password });
+                if (res.status === 200) {
+                    localStorage.setItem('token', res.data.token); // Store token
+                    setUserInfo(res.data.user);
+                    navigate('/profile');
                 }
+            } catch (err) {
+                console.error("Login Error:", err);
             }
         }
+    };
 
-    }
-    const handleSignUp = async () => {
-
-
-        if (validateSignup()) {
-            const res = await apiClient.post(SIGNUP_ROUTE,
-                { email, password }, { withCredentials: true }
-            );
-            if (res.status === 201) {
-                setUserInfo(res.data.user)
-                navigate('/profile')
-            }
-        }
-    }
     return (
         <div className="w-[100vw] h-[100vh] flex items-center justify-center">
             <div className="h-[80vh] border-2 border-white shadow-2xl bg-white w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[60vw] text-opacity-90 grid xl:grid-cols-2 ">

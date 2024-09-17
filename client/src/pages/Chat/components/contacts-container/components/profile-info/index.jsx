@@ -12,15 +12,14 @@ import { apiClient } from "@/lib/api-client";
 const ProfileInfo = () => {
     const { userInfo,setUserInfo } = useAppStore();
     const navigate = useNavigate();
-
+   
+    
 
     const logOut = async () => {
         try {
-            const res = await apiClient.post(LOGOUT_ROUTE,
-                {},
-                { withCredentials: true }
-            )
-            console.log(res);
+            const res = await apiClient.post(LOGOUT_ROUTE); // You might not need to send a request if you don't use server-side session management
+            localStorage.removeItem('token');
+        
             if(res.status === 200){
                 navigate('/auth')
                 setUserInfo(null)

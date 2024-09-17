@@ -9,56 +9,48 @@ const createToken = (email, userId) => {
     return jwt.sign({ email, userId }, process.env.ACCESS_SECRET_TOKEN_KEY, { expiresIn: maxAge })
 
 }
-export const signUp = async (req, res, next) => {
+export const signUp = async (req, res) => {
     try {
-        const { email, password } = req.body
-        console.log(req.body);
+        const { email, password } = req.body;
         if (!email || !password) {
-            return res.status(400).send("Email and password is Required")
+            return res.status(400).send("Email and password are required");
         }
         const user = await User.create({ email, password });
-        res.cookie('jwt', createToken(email, user.id), {
-            maxAge,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite : "None",
-        });
+        const token = createToken(email, user.id);
+
         return res.status(201).json({
             user: {
                 id: user.id,
                 email: user.email,
-                profileSetup: user.profileSetup 
-            }
-        })
+                profileSetup: user.profileSetup
+            },
+            token // Send token in response
+        });
 
     } catch (err) {
-        console.log({ err });
-        return res.status(500).send("Internal Server Error")
+        console.error(err);
+        return res.status(500).send("Internal Server Error");
     }
 }
-export const login = async (req, res, next) => {
+
+export const login = async (req, res) => {
     try {
-        const { email, password } = req.body
-        console.log(req.body);
+        const { email, password } = req.body;
         if (!email || !password) {
-            return res.status(400).send("Email and password is Required")
+            return res.status(400).send("Email and password are required");
         }
 
         const user = await User.findOne({ email });
-        console.log(user);
         if (!user) {
-            return res.status(404).send("User with the given email not founds")
+            return res.status(404).send("User with the given email not found");
         }
-        const auth = await compare(password, user.password)
+        const auth = await compare(password, user.password);
         if (!auth) {
-            return res.status(400).send("Password is Incorrect")
+            return res.status(400).send("Password is incorrect");
         }
-        res.cookie('jwt', createToken(email, user.id), {
-            maxAge,
-            httpOnly: true,
-            secure : true,
-            sameSite:'None' 
-        });
+
+        const token = createToken(email, user.id);
+
         return res.status(200).json({
             user: {
                 id: user.id,
@@ -68,12 +60,13 @@ export const login = async (req, res, next) => {
                 lastName: user.lastName,
                 color: user.color,
                 image: user.image
-            }
-        })
+            },
+            token // Send token in response
+        });
 
     } catch (err) {
-        console.log({ err });
-        return res.status(500).send("Internal Server Error")
+        console.error(err);
+        return res.status(500).send("Internal Server Error");
     }
 }
 
