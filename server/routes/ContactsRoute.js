@@ -4,8 +4,8 @@ import { getContactsForDmList, searchContacts } from "../controllers/ContactsCon
 
 const contactsRoutes = Router();
 
-contactsRoutes.post("/search", verifyToken, searchContacts);
-contactsRoutes.get("/get-contacts-for-dm", verifyToken, getContactsForDmList);
+contactsRoutes.post("/search",searchContacts);
+contactsRoutes.get("/get-contacts-for-dm",  getContactsForDmList);
 
 
 export default contactsRoutes;
