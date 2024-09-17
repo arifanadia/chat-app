@@ -48,7 +48,7 @@ const Auth = () => {
         if (validateLogin()) {
             const res = await apiClient.post(LOGIN_ROUTE,
                 { email, password },
-              
+                { withCredentials: true }
             );
             if (res.data.user.id) {
                 console.log(res.data.user);
@@ -69,7 +69,7 @@ const Auth = () => {
         if (validateSignup()) {
             const res = await apiClient.post(SIGNUP_ROUTE,
                 { email, password },
-             
+                { withCredentials: true }
             );
             if (res.status === 201) {
                 setUserInfo(res.data.user)
