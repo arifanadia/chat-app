@@ -21,8 +21,8 @@ export const signUp = async (req, res, next) => {
             maxAge,
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            samSite : 'strict',
-            domain: isProd() ? '.railway.app' : undefined, 
+            samSite : 'None',
+         
         });
         return res.status(201).json({
             user: {
