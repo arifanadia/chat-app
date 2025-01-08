@@ -139,7 +139,7 @@ export const updateProfile = async (req, res, next) => {
 }
 
 export const addProfileImage = async (req, res, next) => {
-
+// profile
     try {
 
         console.log(req.file);
